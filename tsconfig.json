@@ -18,7 +18,13 @@
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+    
+    //vscode shows errors and its impossible for me to work with that, but it works, and I would use it instead of this ugly imports 
+    // "baseUrl": "./",
+    // "paths": {
+    //   "@types/*": ["src/utils/types/*"]
+    // }
   },
   "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]
