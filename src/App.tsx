@@ -1,9 +1,10 @@
-import { Container, Flex, Title } from "@mantine/core";
+import { Container, Flex, SegmentedControl, Title } from "@mantine/core";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "./store";
 import { fetchJobs } from "./store/features/jobs/jobsSlice";
 import CleaningsTable from "./components/cleaningsTable";
+import { ErrorPage } from "./components/ErrorPage";
 
 const App: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -14,22 +15,21 @@ const App: React.FC = () => {
     dispatch(fetchJobs());
   }, [dispatch]);
 
-  console.log(jobs);
-
-  if (status === "loading") {
-    return <div>...</div>;
-  }
-
   if (status === "failed") {
-    return <div>{status}</div>;
+    return <ErrorPage />;
   }
 
   return (
     <Container fluid p={10}>
       <Flex justify="center" align="flex-start" direction="column" p={20}>
-        <Title order={2} mb={50}>
-          All my cleanings
-        </Title>
+        <Title order={2}>All my cleanings</Title>
+        <SegmentedControl
+          color="cyan"
+          data={["Previous", "Upcoming"]}
+          mt={50}
+          mb={50}
+          size="lg"
+        />
         <CleaningsTable data={jobs} />
       </Flex>
     </Container>

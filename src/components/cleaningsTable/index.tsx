@@ -1,4 +1,4 @@
-import { Table, ScrollArea, Flex } from "@mantine/core";
+import { Table, ScrollArea, Flex, Skeleton } from "@mantine/core";
 import { useState } from "react";
 import classes from "./table.module.css";
 import { JobT } from "../../utils/types";
@@ -30,7 +30,7 @@ const CleaningsTable = ({ data }: Props) => {
   );
 
   if (data.length === 0) {
-    return null;
+    return <Skeleton w="100%" h={500} />;
   }
 
   const properties: (keyof JobT)[] = [
@@ -64,6 +64,7 @@ const CleaningsTable = ({ data }: Props) => {
     <ScrollArea
       h={500}
       onScrollPositionChange={({ y }) => setScrolled(y !== 0)}
+      w="100%"
     >
       <Table miw={700} verticalSpacing="lg">
         <Table.Thead

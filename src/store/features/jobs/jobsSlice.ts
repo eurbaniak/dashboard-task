@@ -10,7 +10,6 @@ const initialState: JobStateT = {
 export const fetchJobs = createAsyncThunk("jobs/fetchJobs", async () => {
   try {
     const data = await handleFetchJobs();
-    console.log(data);
     return data;
   } catch (error) {
     console.error("Error fetching data:", error);
