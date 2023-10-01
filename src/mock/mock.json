@@ -83,6 +83,48 @@
       "duration": 2,
       "location": "Foobar 9",
       "locationUuid": "f97baa38-d427-43c2-b09e-f740230050ee"
+    },
+    {
+      "uuid": "696233333-7033-4c55-956c-59ced45dbe59",
+      "amount": 64,
+      "currency": "CHF",
+      "executionDate": "2023-10-20 07:30",
+      "agent": "Jessica Agent",
+      "contractPeriodicity": 14,
+      "floorAndDoor": "",
+      "locationComment": "",
+      "type": "HOME_CLEANING",
+      "duration": 5,
+      "location": "Foobar 8",
+      "locationUuid": "f97baa38-d427-43c2-b09e-f740230050ee"
+    },
+    {
+      "uuid": "6962777777-7033-4c55-956c-59ced45dbe59",
+      "amount": 64,
+      "currency": "CHF",
+      "executionDate": "2023-10-20 07:30",
+      "agent": "Jessica Agent",
+      "contractPeriodicity": 30,
+      "floorAndDoor": "",
+      "locationComment": "",
+      "type": "HOME_CLEANING",
+      "duration": 5,
+      "location": "Foobar 8",
+      "locationUuid": "f97baa38-d427-43c2-b09e-f740230050ee"
+    },
+    {
+      "uuid": "537214444444-88d4-4489-8fdd-93a80e25e8ba",
+      "amount": 64,
+      "currency": "CHF",
+      "executionDate": "2023-10-23 10:00",
+      "agent": "Jessica Agent",
+      "contractPeriodicity": 7,
+      "floorAndDoor": "",
+      "locationComment": "",
+      "type": "HOME_CLEANING",
+      "duration": 2,
+      "location": "Foobar 9",
+      "locationUuid": "f97baa38-d427-43c2-b09e-f740230050ee"
     }
   ],
   "jobsByLocation": [

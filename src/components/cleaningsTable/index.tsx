@@ -1,90 +1,90 @@
-import { Table, ScrollArea, Skeleton } from "@mantine/core";
-import { useState } from "react";
-import classes from "./table.module.css";
-import cx from "clsx";
+import { useMemo } from "react";
+import { Table, Skeleton, Alert, Center } from "@mantine/core";
 import { JobT } from "@interfaces/index";
 import {
   cleaningTypeFormatter,
   executionDateFormat,
   contractPeriodicityFormat,
 } from "./helpers";
+import CleaningTableBase from "./components/CleaningTableBase";
 
 type Props = {
   jobs: JobT[];
+  isLoading: boolean;
 };
 
-const CleaningsTable = ({ jobs }: Props) => {
-  const [scrolled, setScrolled] = useState(false);
-
-  if (jobs.length === 0) {
+const CleaningsTable = ({ jobs, isLoading }: Props) => {
+  if (isLoading) {
     return <Skeleton w="100%" h={500} />;
   }
 
-  const groupedRows: JSX.Element[] = [];
-
-  const jobsByLocation: { [key: string]: JobT[] } = {};
-
-  jobs.forEach((row) => {
-    const key = `${row.location}`;
-    if (!jobsByLocation[key]) {
-      jobsByLocation[key] = [];
-    }
-
-    jobsByLocation[key].push(row);
-  });
-
-  for (const key in jobsByLocation) {
-    if (Object.prototype.hasOwnProperty.call(jobsByLocation, key)) {
-      const locationJobs = jobsByLocation[key];
-
-      // Location row
-      const locationRow = (
-        <Table.Tr
-          key={`${key}_location`}
-          style={{ border: "1px solid #373A40" }}
-        >
-          <Table.Td rowSpan={locationJobs.length + 1}>{key}</Table.Td>
-        </Table.Tr>
-      );
-
-      const dataRows = locationJobs.map((job) => (
-        <Table.Tr key={job.uuid} style={{ border: "none" }}>
-          <Table.Td>{cleaningTypeFormatter(job.type)}</Table.Td>
-          <Table.Td>
-            {executionDateFormat(job.executionDate, job.duration)}
-          </Table.Td>
-          <Table.Td>
-            {contractPeriodicityFormat(job.contractPeriodicity)}
-          </Table.Td>
-          <Table.Td>{job.agent}</Table.Td>
-        </Table.Tr>
-      ));
-
-      groupedRows.push(locationRow, ...dataRows);
-    }
+  if (jobs.length === 0) {
+    return (
+      <CleaningTableBase>
+        <Table.Caption>
+          <Center mt={50}>
+            <Alert
+              variant="light"
+              color="cyan"
+              radius="md"
+              title="No cleaning records found."
+            />
+          </Center>
+        </Table.Caption>
+      </CleaningTableBase>
+    );
   }
 
-  return (
-    <ScrollArea
-      onScrollPositionChange={({ y }) => setScrolled(y !== 0)}
-      w="100%"
-      h={500}
-    >
-      <Table miw={700} verticalSpacing="md">
-        <Table.Thead
-          className={cx(classes.header, { [classes.scrolled]: scrolled })}
-        >
-          <Table.Tr>
-            <Table.Th>Location</Table.Th>
-            <Table.Th>Type</Table.Th>
-            <Table.Th>Date & Time</Table.Th>
-            <Table.Th>Repetition</Table.Th>
-            <Table.Th>Batmaid</Table.Th>
+  const groupedRows: JSX.Element[] = useMemo(() => {
+    const result: JSX.Element[] = [];
+    const jobsByLocation: { [key: string]: JobT[] } = {};
+
+    jobs.forEach((row) => {
+      const key = `${row.location}`;
+      if (!jobsByLocation[key]) {
+        jobsByLocation[key] = [];
+      }
+
+      jobsByLocation[key].push(row);
+    });
+
+    for (const key in jobsByLocation) {
+      if (Object.prototype.hasOwnProperty.call(jobsByLocation, key)) {
+        const locationJobs = jobsByLocation[key];
+
+        const locationRow = (
+          <Table.Tr
+            key={`${key}_location`}
+            style={{ border: "1px solid #373A40" }}
+          >
+            <Table.Td rowSpan={locationJobs.length + 1}>{key}</Table.Td>
           </Table.Tr>
-        </Table.Thead>
-        <Table.Tbody>{groupedRows}</Table.Tbody>
-      </Table>
-    </ScrollArea>
+        );
+
+        const dataRows = locationJobs.map((job) => (
+          <Table.Tr key={job.uuid} style={{ border: "none" }}>
+            <Table.Td>{cleaningTypeFormatter(job.type)}</Table.Td>
+            <Table.Td>
+              {executionDateFormat(job.executionDate, job.duration)}
+            </Table.Td>
+            <Table.Td>
+              {contractPeriodicityFormat(job.contractPeriodicity)}
+            </Table.Td>
+            <Table.Td>{job.agent}</Table.Td>
+          </Table.Tr>
+        ));
+
+        result.push(locationRow, ...dataRows);
+      }
+    }
+
+    return result;
+  }, [jobs]);
+
+  return (
+    <CleaningTableBase>
+      <Table.Tbody>{groupedRows}</Table.Tbody>
+    </CleaningTableBase>
   );
 };
 

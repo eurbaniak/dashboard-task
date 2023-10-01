@@ -1,5 +1,5 @@
 import { Container, Flex, SegmentedControl, Title } from "@mantine/core";
-import { useEffect } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "./store";
 import { fetchJobs } from "./store/features/jobs/jobsSlice";
@@ -10,14 +10,30 @@ const App: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
   const jobs = useSelector((state: RootState) => state.jobs.data);
   const status = useSelector((state: RootState) => state.jobs.status);
+  const [selectedSegment, setSelectedSegment] = useState("Upcoming");
+  const currentDate = new Date();
+  const isLoading = status === "loading";
 
   useEffect(() => {
     dispatch(fetchJobs());
   }, [dispatch]);
 
+  const handleSegmentChange = useCallback(
+    (value: React.SetStateAction<string>) => {
+      setSelectedSegment(value);
+    },
+    []
+  );
+
   if (status === "failed") {
     return <ErrorPage />;
   }
+
+  const filteredJobs = useMemo(() => {
+    return selectedSegment === "Upcoming"
+      ? jobs.filter((job) => new Date(job.executionDate) > currentDate)
+      : jobs.filter((job) => new Date(job.executionDate) <= currentDate);
+  }, [jobs, currentDate, selectedSegment]);
 
   return (
     <Container fluid p={10}>
@@ -29,8 +45,10 @@ const App: React.FC = () => {
           mt={50}
           mb={50}
           size="lg"
+          value={selectedSegment}
+          onChange={handleSegmentChange}
         />
-        <CleaningsTable jobs={jobs} />
+        <CleaningsTable jobs={filteredJobs} isLoading={isLoading} />
       </Flex>
     </Container>
   );

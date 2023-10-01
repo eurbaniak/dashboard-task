@@ -26,10 +26,8 @@ export const contractPeriodicityFormat = (periodicity: number) => {
     }`;
   }
 
-  return (
-    periodicityMap[periodicity] ||
-    `Every ${periodicity} Day${periodicity > 1 ? "s" : ""}`
-  );
+  const daysText = periodicity === 1 ? "Day" : "Days";
+  return periodicityMap[periodicity] || `Every ${periodicity} ${daysText}`;
 };
 
 export const cleaningTypeFormatter = (type: string) => {
