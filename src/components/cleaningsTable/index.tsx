@@ -1,8 +1,13 @@
-import { Table, ScrollArea, Flex, Skeleton } from "@mantine/core";
+import { Table, ScrollArea, Skeleton } from "@mantine/core";
 import { useState } from "react";
 import classes from "./table.module.css";
-import { JobT } from "@interfaces/index";
 import cx from "clsx";
+import { JobT } from "@interfaces/index";
+import {
+  cleaningTypeFormatter,
+  executionDateFormat,
+  contractPeriodicityFormat,
+} from "./helpers";
 
 type Props = {
   jobs: JobT[];
@@ -11,73 +16,73 @@ type Props = {
 const CleaningsTable = ({ jobs }: Props) => {
   const [scrolled, setScrolled] = useState(false);
 
-  const generateTableCells = (locationData: JobT[], property: keyof JobT) =>
-    locationData.map((row, index) => (
-      <Flex align="flex-start" direction="column" key={index}>
-        <Table.Td>{row[property]}</Table.Td>
-      </Flex>
-    ));
-
-  const groupCleaningsByLocation: Record<string, JobT[]> = jobs.reduce(
-    (acc: any, row: any) => {
-      if (!acc[row.location]) {
-        acc[row.location] = [];
-      }
-      acc[row.location].push(row);
-      return acc;
-    },
-    {}
-  );
-
   if (jobs.length === 0) {
     return <Skeleton w="100%" h={500} />;
   }
 
-  const properties: (keyof JobT)[] = [
-    "type",
-    "executionDate",
-    "contractPeriodicity",
-    "agent",
-  ];
+  const groupedRows: JSX.Element[] = [];
 
-  const headerNames: string[] = [
-    "Type",
-    "Date & Time",
-    "Repetition",
-    "Batmaid",
-  ];
+  const jobsByLocation: { [key: string]: JobT[] } = {};
 
-  const rows = Object.entries(groupCleaningsByLocation).map(
-    ([location, locationData]) => (
-      <Table.Tr key={location}>
-        <Table.Td>{location}</Table.Td>
-        {properties.map((property) => (
-          <Table.Td key={property} p={0}>
-            {generateTableCells(locationData, property)}
+  jobs.forEach((row) => {
+    const key = `${row.location}`;
+    if (!jobsByLocation[key]) {
+      jobsByLocation[key] = [];
+    }
+
+    jobsByLocation[key].push(row);
+  });
+
+  for (const key in jobsByLocation) {
+    if (Object.prototype.hasOwnProperty.call(jobsByLocation, key)) {
+      const locationJobs = jobsByLocation[key];
+
+      // Location row
+      const locationRow = (
+        <Table.Tr
+          key={`${key}_location`}
+          style={{ border: "1px solid #373A40" }}
+        >
+          <Table.Td rowSpan={locationJobs.length + 1}>{key}</Table.Td>
+        </Table.Tr>
+      );
+
+      const dataRows = locationJobs.map((job) => (
+        <Table.Tr key={job.uuid} style={{ border: "none" }}>
+          <Table.Td>{cleaningTypeFormatter(job.type)}</Table.Td>
+          <Table.Td>
+            {executionDateFormat(job.executionDate, job.duration)}
           </Table.Td>
-        ))}
-      </Table.Tr>
-    )
-  );
+          <Table.Td>
+            {contractPeriodicityFormat(job.contractPeriodicity)}
+          </Table.Td>
+          <Table.Td>{job.agent}</Table.Td>
+        </Table.Tr>
+      ));
+
+      groupedRows.push(locationRow, ...dataRows);
+    }
+  }
 
   return (
     <ScrollArea
-      h={500}
       onScrollPositionChange={({ y }) => setScrolled(y !== 0)}
       w="100%"
+      h={500}
     >
-      <Table miw={700} verticalSpacing="lg">
+      <Table miw={700} verticalSpacing="md">
         <Table.Thead
           className={cx(classes.header, { [classes.scrolled]: scrolled })}
         >
           <Table.Tr>
-            <Table.Th>Address</Table.Th>
-            {headerNames.map((headerName, index) => (
-              <Table.Th key={index}>{headerName}</Table.Th>
-            ))}
+            <Table.Th>Location</Table.Th>
+            <Table.Th>Type</Table.Th>
+            <Table.Th>Date & Time</Table.Th>
+            <Table.Th>Repetition</Table.Th>
+            <Table.Th>Batmaid</Table.Th>
           </Table.Tr>
         </Table.Thead>
-        <Table.Tbody>{rows}</Table.Tbody>
+        <Table.Tbody>{groupedRows}</Table.Tbody>
       </Table>
     </ScrollArea>
   );
