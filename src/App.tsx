@@ -1,10 +1,11 @@
-import { Container, Flex, SegmentedControl, Title } from "@mantine/core";
+import { Container, Flex, Group, SegmentedControl, Title } from "@mantine/core";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "./store";
 import { fetchJobs } from "./store/features/jobs/jobsSlice";
 import CleaningsTable from "./components/cleaningsTable";
 import { ErrorPage } from "./components/ErrorPage";
+import ToggleColorScheme from "./components/ToggleColorScheme";
 
 const App: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -38,7 +39,10 @@ const App: React.FC = () => {
   return (
     <Container fluid p={10}>
       <Flex justify="center" align="flex-start" direction="column" p={20}>
-        <Title order={2}>All my cleanings</Title>
+        <Group justify="space-between" gap="sm" w="100%">
+          <Title order={2}>All my cleanings</Title>
+          <ToggleColorScheme />
+        </Group>
         <SegmentedControl
           color="cyan"
           data={["Previous", "Upcoming"]}
