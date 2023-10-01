@@ -1,14 +1,14 @@
 import { Table, ScrollArea, Flex, Skeleton } from "@mantine/core";
 import { useState } from "react";
 import classes from "./table.module.css";
-import { JobT } from "../../utils/types";
+import { JobT } from "@interfaces/index";
 import cx from "clsx";
 
 type Props = {
-  data: JobT[];
+  jobs: JobT[];
 };
 
-const CleaningsTable = ({ data }: Props) => {
+const CleaningsTable = ({ jobs }: Props) => {
   const [scrolled, setScrolled] = useState(false);
 
   const generateTableCells = (locationData: JobT[], property: keyof JobT) =>
@@ -18,7 +18,7 @@ const CleaningsTable = ({ data }: Props) => {
       </Flex>
     ));
 
-  const groupCleaningsByLocation: Record<string, JobT[]> = data.reduce(
+  const groupCleaningsByLocation: Record<string, JobT[]> = jobs.reduce(
     (acc: any, row: any) => {
       if (!acc[row.location]) {
         acc[row.location] = [];
@@ -29,7 +29,7 @@ const CleaningsTable = ({ data }: Props) => {
     {}
   );
 
-  if (data.length === 0) {
+  if (jobs.length === 0) {
     return <Skeleton w="100%" h={500} />;
   }
 

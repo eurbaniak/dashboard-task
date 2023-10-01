@@ -6,7 +6,7 @@ import {
   SimpleGrid,
   Image,
 } from "@mantine/core";
-import image from "../../assets/error.svg";
+import image from "@assets/error.svg";
 import classes from "./error.module.css";
 import { IconReload } from "@tabler/icons-react";
 

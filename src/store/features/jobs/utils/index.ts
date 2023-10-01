@@ -1,5 +1,5 @@
-import mockData from "../../../../mock/mock.json";
-import { JobT } from "../../../../utils/types";
+import { JobT } from "@interfaces/index";
+import mockData from "@mock/mock.json";
 
 //this acync function simulates api call by using setTimeout and returning data after 1 to 4 seconds
 export const handleFetchJobs = async (): Promise<JobT[]> => {

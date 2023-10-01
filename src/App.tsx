@@ -30,7 +30,7 @@ const App: React.FC = () => {
           mb={50}
           size="lg"
         />
-        <CleaningsTable data={jobs} />
+        <CleaningsTable jobs={jobs} />
       </Flex>
     </Container>
   );

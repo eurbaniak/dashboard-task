@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { JobStateT } from "../../../utils/types";
 import { handleFetchJobs } from "./utils";
+import { JobStateT } from "@interfaces/index";
 
 const initialState: JobStateT = {
   data: [],
